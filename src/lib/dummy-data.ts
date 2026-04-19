@@ -319,3 +319,314 @@ export const conductorReallocations: ReallocationFlow[] = [
   { from: "Influencer Alpha",     to: "Affiliate Partnerships", amount: 6_000,  fromVelocity: 0.29, toVelocity: 1.62 },
   { from: "Display",              to: "Email Automation",       amount: 3_200,  fromVelocity: 0.31, toVelocity: 1.45 },
 ];
+
+// ============================================================
+// OPERATIONS DASHBOARD — HEADER KPIs
+// ============================================================
+
+export const operationsHeaderKpis = {
+  conversionRate: 3.42, // %
+  stockoutRate: 2.1, // %
+  customerLtvAvg: 284, // $
+  supportResolutionTimeAvg: 4.2, // hours
+};
+
+// ============================================================
+// ACQUISITION AGENT — Revenue Velocity
+// ============================================================
+
+export const acquisitionKpis = {
+  cacTopChannel: 48, // Google Shopping
+  ltvCacRatio: 2.8,
+  currentAdSpend: 84_200, // monthly
+};
+
+export interface ChannelCacPoint {
+  date: string;
+  google: number;
+  meta: number;
+  tiktok: number;
+  email: number;
+}
+
+export const acquisitionCacTrend: ChannelCacPoint[] = Array.from({ length: 30 }, (_, i) => {
+  const day = new Date("2026-03-21");
+  day.setDate(day.getDate() + i);
+  return {
+    date: day.toISOString().slice(0, 10),
+    google: Math.round(52 + Math.sin(i * 0.4) * 8 - i * 0.15),
+    meta: Math.round(78 + Math.sin(i * 0.5) * 12 + i * 0.3),
+    tiktok: Math.round(38 + Math.sin(i * 0.3) * 6 - i * 0.2),
+    email: Math.round(12 + Math.sin(i * 0.6) * 3),
+  };
+});
+
+// Segments × Channels LTV:CAC ratio heatmap
+export const acquisitionLtvCacHeatmap = {
+  segments: ["Enterprise", "Mid-Market", "SMB", "Consumer"],
+  channels: ["Google Shopping", "Google Ads", "TikTok", "Meta", "Email"],
+  // ratios
+  grid: [
+    [3.2, 2.1, 4.5, 1.4, 5.8],
+    [2.8, 1.9, 3.8, 1.2, 4.9],
+    [2.4, 1.6, 3.1, 1.0, 4.2],
+    [2.0, 1.3, 2.6, 0.9, 3.5],
+  ],
+};
+
+export interface SpendAllocation {
+  channel: string;
+  amount: number;
+  color: string;
+}
+
+export const acquisitionSpendAllocation: SpendAllocation[] = [
+  { channel: "Google Shopping", amount: 22_000, color: "#4f46e5" },
+  { channel: "Google Ads",      amount: 18_500, color: "#6366f1" },
+  { channel: "TikTok",          amount: 19_200, color: "#ec4899" },
+  { channel: "Meta",            amount: 14_500, color: "#3b82f6" },
+  { channel: "Email",           amount: 6_000,  color: "#10b981" },
+  { channel: "Affiliate",       amount: 4_000,  color: "#f59e0b" },
+];
+
+export interface SpendReallocationProposal {
+  id: string;
+  fromChannel: string;
+  toChannel: string;
+  amount: number;
+  currentCac: number;
+  projectedCac: number;
+  cacImprovement: number; // %
+}
+
+export const acquisitionProposals: SpendReallocationProposal[] = [
+  { id: "acq-001", fromChannel: "Meta",        toChannel: "Google Shopping", amount: 7_500,  currentCac: 88, projectedCac: 48, cacImprovement: 45 },
+  { id: "acq-002", fromChannel: "Google Ads",  toChannel: "TikTok",          amount: 4_200,  currentCac: 62, projectedCac: 38, cacImprovement: 39 },
+  { id: "acq-003", fromChannel: "Display",     toChannel: "Email",           amount: 2_800,  currentCac: 95, projectedCac: 12, cacImprovement: 87 },
+];
+
+// ============================================================
+// CONVERSION AGENT — Revenue Velocity
+// ============================================================
+
+export const conversionKpis = {
+  conversionRate: 3.42, // %
+  averageOrderValue: 92,
+  cartAbandonmentRate: 68.3, // %
+};
+
+export interface FunnelStep {
+  step: string;
+  users: number;
+}
+
+export const conversionFunnel: FunnelStep[] = [
+  { step: "Visit",         users: 124_000 },
+  { step: "Product View",  users: 68_200 },
+  { step: "Add to Cart",   users: 21_800 },
+  { step: "Checkout",      users: 8_900  },
+  { step: "Purchase",      users: 4_240  },
+];
+
+export const conversionDevice = [
+  { device: "Mobile",  rate: 2.8 },
+  { device: "Desktop", rate: 4.6 },
+  { device: "Tablet",  rate: 3.1 },
+];
+
+export interface AbTest {
+  id: string;
+  name: string;
+  variant: string;
+  conversionLift: number; // %
+  status: "Winning" | "Inconclusive" | "Losing" | "Completed";
+  autoRollout: boolean; // true when lift above threshold
+}
+
+export const conversionAbTests: AbTest[] = [
+  { id: "ab-001", name: "Checkout redesign",           variant: "Variant B", conversionLift: 14.3, status: "Completed",    autoRollout: false },
+  { id: "ab-002", name: "PDP video autoplay",          variant: "Variant A", conversionLift: 8.2,  status: "Winning",      autoRollout: true  },
+  { id: "ab-003", name: "Cart bundle upsell",          variant: "Variant C", conversionLift: 4.1,  status: "Winning",      autoRollout: true  },
+  { id: "ab-004", name: "Free shipping threshold",     variant: "Variant B", conversionLift: 1.2,  status: "Inconclusive", autoRollout: false },
+  { id: "ab-005", name: "Promo banner copy",           variant: "Variant A", conversionLift: -2.3, status: "Losing",       autoRollout: false },
+];
+
+// ============================================================
+// RETENTION AGENT — Revenue Velocity
+// ============================================================
+
+export const retentionKpis = {
+  churnRate30d: 8.4, // %
+  reactivationRate: 11.2, // %
+  ltvGrowth: 4.8, // %
+};
+
+export interface LtvPoint {
+  month: string;
+  ltv: number;
+}
+
+export const retentionLtvTrend: LtvPoint[] = [
+  { month: "Nov", ltv: 248 },
+  { month: "Dec", ltv: 256 },
+  { month: "Jan", ltv: 262 },
+  { month: "Feb", ltv: 271 },
+  { month: "Mar", ltv: 279 },
+  { month: "Apr", ltv: 284 },
+];
+
+export interface ChurnRiskSegment {
+  id: string;
+  segment: string;
+  size: number;
+  churnProbability: number; // %
+  intervention: string;
+  revenueAtRisk: number;
+}
+
+export const retentionChurnSegments: ChurnRiskSegment[] = [
+  { id: "ch-001", segment: "High-Value Lapsed",   size: 2_340, churnProbability: 71, intervention: "20% discount win-back", revenueAtRisk: 228_900 },
+  { id: "ch-002", segment: "Subscription At Risk", size: 840,  churnProbability: 58, intervention: "Pause + downgrade offer", revenueAtRisk: 84_200 },
+  { id: "ch-003", segment: "Single-Order 60d",    size: 5_420, churnProbability: 42, intervention: "Bundle + free shipping", revenueAtRisk: 142_100 },
+  { id: "ch-004", segment: "VIP Quiet 90d",       size: 212,   churnProbability: 32, intervention: "Personal CSM outreach",  revenueAtRisk: 58_700 },
+];
+
+export interface RetentionCampaign {
+  id: string;
+  targetSegment: string;
+  offerType: string;
+  projectedReactivation: number; // %
+  projectedRevenue: number;
+}
+
+export const retentionCampaigns: RetentionCampaign[] = [
+  { id: "ret-001", targetSegment: "High-Value Lapsed",    offerType: "20% discount + free shipping",    projectedReactivation: 18, projectedRevenue: 41_200 },
+  { id: "ret-002", targetSegment: "Subscription At Risk", offerType: "Pause option + loyalty bonus",    projectedReactivation: 34, projectedRevenue: 28_600 },
+  { id: "ret-003", targetSegment: "VIP Quiet 90d",        offerType: "Early-access product drop",        projectedReactivation: 51, projectedRevenue: 29_900 },
+];
+
+// ============================================================
+// DEMAND PROPHET AGENT — Inventory Intelligence
+// ============================================================
+
+export const demandProphetKpis = {
+  forecastAccuracy: 91, // %
+  activeStockoutRisks: 4,
+  avgHoldingCostPerUnit: 2.14,
+};
+
+export interface SkuForecastPoint {
+  day: number;
+  demand: number;
+  upper: number;
+  lower: number;
+}
+
+// 60-day SKU-level forecast for top SKU
+export const demandProphetForecast: SkuForecastPoint[] = Array.from({ length: 60 }, (_, i) => {
+  const base = 180 + Math.sin(i * 0.25) * 35 + i * 0.8;
+  const band = base * 0.18;
+  return {
+    day: i + 1,
+    demand: Math.round(base),
+    upper: Math.round(base + band),
+    lower: Math.round(base - band),
+  };
+});
+
+export const demandProphetStockoutHeatmap = {
+  locations: ["West Coast DC", "East Coast DC", "Central DC", "International"],
+  weeks: ["W1", "W2", "W3", "W4", "W5", "W6"],
+  // 0-100, higher = more risk
+  grid: [
+    [12, 18, 34, 72, 48, 22],
+    [8,  14, 22, 35, 45, 28],
+    [5,  8,  12, 18, 25, 22],
+    [22, 28, 45, 58, 42, 30],
+  ],
+};
+
+export interface PurchaseOrderProposal {
+  id: string;
+  sku: string;
+  productName: string;
+  vendor: string;
+  quantity: number;
+  estimatedCost: number;
+  triggerReason: string;
+  autoExecute: boolean; // true when under $10k threshold
+}
+
+export const demandProphetPoProposals: PurchaseOrderProposal[] = [
+  { id: "po-001", sku: "SKU-0091", productName: "Wireless Earbuds Pro",     vendor: "Vendor Apex",     quantity: 4_200, estimatedCost: 58_800, triggerReason: "Stockout risk in 11 days",              autoExecute: false },
+  { id: "po-002", sku: "SKU-0047", productName: "Portable Charger 20K",     vendor: "Vendor Meridian", quantity: 1_800, estimatedCost: 21_600, triggerReason: "Seasonal demand uplift +62%",          autoExecute: false },
+  { id: "po-003", sku: "SKU-0112", productName: "USB-C Hub",                vendor: "Vendor Nexus",    quantity: 320,   estimatedCost: 4_480,  triggerReason: "Reorder point breached",                autoExecute: true  },
+  { id: "po-004", sku: "SKU-0203", productName: "Wireless Charging Pad",    vendor: "Vendor Apex",     quantity: 540,   estimatedCost: 6_480,  triggerReason: "Weekly sell-through above forecast",    autoExecute: true  },
+  { id: "po-005", sku: "SKU-0158", productName: "Bluetooth Speaker Mini",   vendor: "Vendor Echo",     quantity: 1_200, estimatedCost: 14_400, triggerReason: "Above auto-execute threshold",          autoExecute: false },
+];
+
+// ============================================================
+// LOGISTICS CONDUCTOR AGENT — Inventory Intelligence
+// ============================================================
+
+export const logisticsKpis = {
+  onTimeDeliveryRate: 93.4, // %
+  deliveryCostPerOrder: 8.42,
+  activeDelayAlerts: 3,
+};
+
+export interface CarrierCost {
+  carrier: string;
+  costPerOrder: number;
+  onTimeRate: number;
+}
+
+export const logisticsCarrierCosts: CarrierCost[] = [
+  { carrier: "Carrier Echo",   costPerOrder: 6.88,  onTimeRate: 96.2 },
+  { carrier: "Carrier Alpha",  costPerOrder: 7.42,  onTimeRate: 94.1 },
+  { carrier: "Carrier Bravo",  costPerOrder: 8.70,  onTimeRate: 87.4 },
+  { carrier: "Carrier Delta",  costPerOrder: 11.20, onTimeRate: 82.1 },
+];
+
+export interface OnTimeTrendPoint {
+  week: string;
+  rate: number;
+}
+
+export const logisticsOnTimeTrend: OnTimeTrendPoint[] = [
+  { week: "W-5", rate: 91.2 },
+  { week: "W-4", rate: 92.0 },
+  { week: "W-3", rate: 91.8 },
+  { week: "W-2", rate: 93.1 },
+  { week: "W-1", rate: 92.8 },
+  { week: "W0",  rate: 93.4 },
+];
+
+export interface DelayAlert {
+  id: string;
+  carrier: string;
+  route: string;
+  affectedOrders: number;
+  cause: string;
+  proposedAction: string;
+}
+
+export const logisticsDelayAlerts: DelayAlert[] = [
+  { id: "dl-001", carrier: "Carrier Bravo", route: "West Coast → Pacific NW", affectedOrders: 340, cause: "Port congestion at Long Beach",       proposedAction: "Proactive email to affected customers with 20% credit" },
+  { id: "dl-002", carrier: "Carrier Delta", route: "Midwest distribution",    affectedOrders: 128, cause: "Weather event — severe storm system", proposedAction: "Suspend promises; extend delivery ETA by 48h" },
+  { id: "dl-003", carrier: "Carrier Bravo", route: "Northeast urban",         affectedOrders: 96,  cause: "Carrier labor disruption",            proposedAction: "Reroute to Carrier Echo for in-flight orders" },
+];
+
+export interface RouteOptimization {
+  id: string;
+  description: string;
+  projectedSavings: number;
+  onTimeImprovement: number; // % points
+}
+
+export const logisticsRouteOptimizations: RouteOptimization[] = [
+  { id: "ro-001", description: "Shift 40% West Coast shipments from Carrier Bravo to Carrier Echo", projectedSavings: 18_400, onTimeImprovement: 8.8 },
+  { id: "ro-002", description: "Consolidate Midwest SKUs through Central DC (cuts 1 hop)",           projectedSavings: 7_200,  onTimeImprovement: 2.4 },
+  { id: "ro-003", description: "Negotiate volume tier with Carrier Alpha at 12% discount",          projectedSavings: 14_800, onTimeImprovement: 0   },
+];
+
