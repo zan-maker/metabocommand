@@ -5,15 +5,31 @@ import { ConversionAgentView } from "./conversion-agent-view";
 import { RetentionAgentView } from "./retention-agent-view";
 import { DemandProphetAgentView } from "./demand-prophet-agent-view";
 import { LogisticsConductorAgentView } from "./logistics-conductor-agent-view";
+import { SupportReflexAgentView } from "./support-reflex-agent-view";
+import { AdvocacyAgentView } from "./advocacy-agent-view";
+import { HarmonyAgentView } from "./harmony-agent-view";
 import { operationsHeaderKpis } from "@/lib/dummy-data";
+import type { OperatingMode } from "@/lib/dummy-data-lifetime";
 
 export default async function OperationsDashboardPage() {
   const supabase = await createClient();
-  const { count: pendingCount } = await supabase
-    .from("approval_items")
-    .select("*", { count: "exact", head: true })
-    .eq("queue", "operations")
-    .eq("status", "pending");
+
+  const [pendingApprovalsResult, operatingModeResult] = await Promise.all([
+    supabase
+      .from("approval_items")
+      .select("*", { count: "exact", head: true })
+      .eq("queue", "operations")
+      .eq("status", "pending"),
+    supabase
+      .from("app_settings")
+      .select("value")
+      .eq("key", "operating_mode")
+      .single(),
+  ]);
+
+  const pendingCount = pendingApprovalsResult.count ?? 0;
+  const initialMode: OperatingMode =
+    operatingModeResult.data?.value === "growth" ? "growth" : "efficiency";
 
   return (
     <div className="p-8 space-y-6">
@@ -49,7 +65,7 @@ export default async function OperationsDashboardPage() {
         />
         <KpiCard
           label="Pending Approvals"
-          value={String(pendingCount ?? 0)}
+          value={String(pendingCount)}
           trend="neutral"
         />
       </div>
@@ -64,11 +80,11 @@ export default async function OperationsDashboardPage() {
       <LogisticsConductorAgentView />
 
       <SectionHeader title="Customer Lifetime" description="Support automation and advocacy amplification" />
-      <PanelStub name="Support Reflex Agent" subtitle="Autonomous support issue resolution" />
-      <PanelStub name="Advocacy Agent" subtitle="Review and referral amplification" />
+      <SupportReflexAgentView />
+      <AdvocacyAgentView />
 
       <SectionHeader title="Operational Health" description="Cross-agent harmony and system-wide coordination" />
-      <PanelStub name="Harmony Agent" subtitle="Detects and resolves cross-agent conflicts" />
+      <HarmonyAgentView initialMode={initialMode} />
     </div>
   );
 }
@@ -78,16 +94,6 @@ function SectionHeader({ title, description }: { title: string; description: str
     <div className="border-t border-slate-200 pt-6 mt-4">
       <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
       <p className="text-sm text-slate-500 mt-0.5">{description}</p>
-    </div>
-  );
-}
-
-function PanelStub({ name, subtitle }: { name: string; subtitle: string }) {
-  return (
-    <div className="rounded-lg border border-dashed border-slate-300 bg-white p-6 text-center">
-      <div className="text-sm font-semibold text-slate-900">{name}</div>
-      <div className="text-xs text-slate-500 mt-1">{subtitle}</div>
-      <div className="text-xs text-slate-400 mt-4 italic">View coming in Phase 2b</div>
     </div>
   );
 }

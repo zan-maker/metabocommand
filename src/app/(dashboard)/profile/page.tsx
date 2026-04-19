@@ -1,40 +1,37 @@
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardContent } from "@/components/ui/card";
+import { ProfileView } from "./profile-view";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", user!.id)
+    .eq("id", user.id)
     .single();
+  if (!profile) redirect("/role-not-assigned");
 
   return (
-    <div className="p-8 space-y-5 max-w-xl">
+    <div className="p-8 space-y-6 max-w-2xl">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">User Profile</h1>
-        <p className="text-sm text-slate-500 mt-1">Your account details</p>
+        <p className="text-sm text-slate-500 mt-1">
+          Account details, password, and notification preferences
+        </p>
       </div>
-      <Card>
-        <CardContent className="p-6 space-y-4">
-          <Field label="Display name" value={profile?.display_name ?? ""} />
-          <Field label="Email" value={profile?.email ?? ""} />
-          <Field label="Role" value={profile?.role ?? ""} />
-        </CardContent>
-      </Card>
-      <p className="text-xs text-slate-500">
-        Password change + notification preferences coming in the next build phase.
-      </p>
-    </div>
-  );
-}
-
-function Field({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</div>
-      <div className="text-sm text-slate-900 mt-1">{value}</div>
+      <ProfileView
+        displayName={profile.display_name}
+        email={profile.email}
+        role={profile.role}
+        notificationPrefs={profile.notification_prefs ?? {
+          approvals: true,
+          agent_updates: true,
+          activity: false,
+        }}
+      />
     </div>
   );
 }
