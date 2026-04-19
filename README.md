@@ -64,6 +64,46 @@ Liquidity gauge with critical / watch / healthy thresholds, alongside proposed c
 
 ---
 
+## Operations Dashboard
+
+### Operations Command Center — Overview
+
+![Operations Dashboard](docs/screenshots/10-operations-dashboard.jpg)
+
+Five-card KPI bar (Conversion Rate, Stockout Rate, Customer LTV, Support Resolution, Pending Approvals) plus section-grouped agent panels. James (Operational Lead) lands here on login; RLS ensures he sees only Operations-scoped approval items, log records, and activity history.
+
+### Acquisition Agent — Revenue Velocity
+
+![Acquisition Agent](docs/screenshots/11-acquisition-agent.jpg)
+
+LTV:CAC ratio heatmap by customer segment × acquisition channel (green = healthy, amber = watch, red = losing money), with auto-generated spend reallocation recommendations below. Each recommendation quantifies the CAC reduction and monthly dollar amount, submittable for approval with one click.
+
+### Conversion Agent — Funnel + A/B Orchestration
+
+![Conversion Agent](docs/screenshots/12-conversion-agent.jpg)
+
+Inline funnel visualization with step-to-step conversion percentages, color-coded conversion rate by device, and A/B test results with split routing: tests under a 10% lift threshold auto-roll out to 100% traffic; larger lifts require approval.
+
+### Retention Agent — Churn & Win-back
+
+![Retention Agent](docs/screenshots/13-retention-agent.jpg)
+
+Six-month LTV trend plus churn risk segmentation with intervention recommendations and dollar revenue at risk. Clicking through to win-back campaign proposals (not shown) submits real approval items for the Operational Lead to approve.
+
+### Demand Prophet Agent — Inventory Intelligence
+
+![Demand Prophet Agent](docs/screenshots/14-demand-prophet.jpg)
+
+60-day SKU-level demand forecast with an 18% confidence band, paired with a stockout risk heatmap across distribution centers and weeks. Warehouses flagged amber or red trigger auto-generated POs (auto-execute under $10,000, approval-required above).
+
+### Logistics Conductor Agent — Carrier & Route Optimization
+
+![Logistics Conductor Agent](docs/screenshots/15-logistics-conductor.jpg)
+
+Carrier cost bars color-coded by on-time rate (green ≥95%, rose &lt;85%), on-time trend line, and active delay alerts with proposed proactive actions. Route optimization proposals quantify annual savings and on-time improvement percentages.
+
+---
+
 ## What works end-to-end in this slice
 
 - **Auth + role routing** — Supabase email/password; CFO lands on Finance Dashboard, Operational Lead lands on Operations Dashboard.
@@ -72,10 +112,15 @@ Liquidity gauge with critical / watch / healthy thresholds, alongside proposed c
   - **Oracle Agent** — demand forecast with 15% confidence band, probability-weighted scenario stack, 5-scenario decision table
   - **Sniper Agent** — expense scatter plot with waste zone overlay, velocity bar chart, waste proposals with Auto-Execute / Submit-for-Approval split
   - **Conductor Agent** — liquidity gauge, reallocation flows, priority matrix for 7 active initiatives
+- **Operations Dashboard** with five fully-built agents across two panels:
+  - **Acquisition Agent** — CAC trend, LTV:CAC heatmap, spend pie, reallocation recommendations
+  - **Conversion Agent** — inline funnel, device breakdown, A/B test table with Auto-Rollout vs Submit routing
+  - **Retention Agent** — LTV trend, churn risk segments, win-back campaign proposals
+  - **Demand Prophet Agent** — SKU forecast with confidence band, stockout heatmap, auto-PO table with threshold
+  - **Logistics Conductor Agent** — carrier bars color-coded by on-time rate, on-time trend, delay alerts, route optimizations
 - **Approval Queue** — Realtime subscription + Presence + four activity status badges (Idle / Reviewing / Approving / Rejecting) + 60s idle timeout + Slack webhook notifications + RLS-enforced role scoping
 - **Agent Action Log** — Realtime + Presence (Idle / Reviewing log / Filtering logs) + three-filter combination + expandable reasoning rows
 - **Activity History Log** — multi-select filters + date range + paginated load-more + CSV export + role scoping
-- **Settings / Profile / Operations Dashboard** — routed placeholders (UI comes next)
 - **Seed data** — 12 agents, 14 approval items, 22 agent log records, 14 activity records, all matching the requirements spec exactly
 
 ## Architecture
