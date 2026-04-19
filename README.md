@@ -44,11 +44,17 @@ Chronological audit trail of every agent action (proposals, auto-executions, and
 
 Every user-initiated action (logins, approvals, threshold updates, agent pauses, settings changes) is recorded with UTC timestamp, user identity, and contextual reference. Filters update the timeline instantly; "Export Report" downloads the current filtered set as CSV for offline review.
 
+### Oracle Agent — Scenario Modeling Engine
+
+![Oracle Agent](docs/screenshots/09-oracle-agent.jpg)
+
+Probability-weighted demand forecasting with a 15% confidence band across a 13-week rolling window. Forecast accuracy, active scenario count, and capital deployment lead time are surfaced as KPIs, while the scenarios table below (not shown) ranks five scenarios by probability with inline "Submit for Approval" actions.
+
 ### Sniper Agent — Waste Elimination Reflex
 
-![Sniper Agent scatter plot](docs/screenshots/07-sniper-scatter.jpg)
+![Sniper Agent](docs/screenshots/07-sniper-agent.jpg)
 
-Scatter plot of every expense line item by Capital Deployed (x) vs LTV Contribution (y). The shaded red quadrant highlights the "waste zone" — low spend, low LTV — where the Sniper Agent auto-cancels items under a $500/month threshold and queues larger items for CFO approval.
+Two visual layers: the scatter plot maps every expense line item by Capital Deployed (x) vs LTV Contribution (y), with a shaded red "waste zone" on the low-spend / low-LTV quadrant. Below it, the velocity bar chart color-codes categories (green ≥1.5, indigo ≥1.0, amber ≥0.5, rose &lt;0.5). Items under $500/month auto-execute; larger items queue for CFO approval.
 
 ### Conductor Agent — Capital Orchestration
 
