@@ -102,9 +102,29 @@ Six-month LTV trend plus churn risk segmentation with intervention recommendatio
 
 Carrier cost bars color-coded by on-time rate (green ≥95%, rose &lt;85%), on-time trend line, and active delay alerts with proposed proactive actions. Route optimization proposals quantify annual savings and on-time improvement percentages.
 
+### Support Reflex Agent — Customer Lifetime
+
+![Support Reflex Agent](docs/screenshots/16-support-reflex.jpg)
+
+Inquiry volume bars color-coded by severity (rose ≥1000, amber 500-999, indigo 300-499, green &lt;300), 8-week resolution time trend, and recurring issue patterns with auto-generated process improvements submittable for approval.
+
+### Advocacy Agent — Review & Referral Amplification
+
+![Advocacy Agent](docs/screenshots/17-advocacy-agent.jpg)
+
+Six-month review volume trend, inline referral funnel with step-to-step conversion percentages, and a high-advocacy segment table ranking customer cohorts by advocacy score with recommended actions (Review request / Referral incentive / Loyalty program invite).
+
+### Harmony Agent — Operational Health + Operating Mode Toggle
+
+![Harmony Agent](docs/screenshots/18-harmony-agent.jpg)
+
+The system-wide coordinator. Two KPI cards plus a **Growth / Efficiency operating mode toggle** (confirmed via modal, broadcast via Realtime so all tabs sync). The Active agent conflicts feed shows cross-agent disagreements with Harmony's resolution recommendation; the System bottlenecks feed surfaces capacity issues with Submit-for-Approval actions.
+
 ---
 
-## What works end-to-end in this slice
+## What works end-to-end
+
+After Phase 2b, the app is **feature-complete against the requirements spec** except for live data integrations and agent pause persistence (both explicitly deferred):
 
 - **Auth + role routing** — Supabase email/password; CFO lands on Finance Dashboard, Operational Lead lands on Operations Dashboard.
 - **Finance Dashboard** with four fully-built Capital Reflex agents:
@@ -112,15 +132,20 @@ Carrier cost bars color-coded by on-time rate (green ≥95%, rose &lt;85%), on-t
   - **Oracle Agent** — demand forecast with 15% confidence band, probability-weighted scenario stack, 5-scenario decision table
   - **Sniper Agent** — expense scatter plot with waste zone overlay, velocity bar chart, waste proposals with Auto-Execute / Submit-for-Approval split
   - **Conductor Agent** — liquidity gauge, reallocation flows, priority matrix for 7 active initiatives
-- **Operations Dashboard** with five fully-built agents across two panels:
+- **Operations Dashboard** with all eight agents across four panels:
   - **Acquisition Agent** — CAC trend, LTV:CAC heatmap, spend pie, reallocation recommendations
   - **Conversion Agent** — inline funnel, device breakdown, A/B test table with Auto-Rollout vs Submit routing
   - **Retention Agent** — LTV trend, churn risk segments, win-back campaign proposals
   - **Demand Prophet Agent** — SKU forecast with confidence band, stockout heatmap, auto-PO table with threshold
   - **Logistics Conductor Agent** — carrier bars color-coded by on-time rate, on-time trend, delay alerts, route optimizations
+  - **Support Reflex Agent** — inquiry volume bars, resolution time trend, recurring issue patterns with process improvements
+  - **Advocacy Agent** — review volume trend, referral funnel, high-advocacy segment table
+  - **Harmony Agent** — agent conflict feed, Growth/Efficiency operating mode toggle (confirmation modal + Realtime broadcast), system bottleneck feed
 - **Approval Queue** — Realtime subscription + Presence + four activity status badges (Idle / Reviewing / Approving / Rejecting) + 60s idle timeout + Slack webhook notifications + RLS-enforced role scoping
 - **Agent Action Log** — Realtime + Presence (Idle / Reviewing log / Filtering logs) + three-filter combination + expandable reasoning rows
 - **Activity History Log** — multi-select filters + date range + paginated load-more + CSV export + role scoping
+- **Settings** — Data Source cards, editable Agent Threshold table, Slack Integration with Test Connection
+- **Profile** — read-only account info, password change, notification preferences toggles (persisted to JSONB)
 - **Seed data** — 12 agents, 14 approval items, 22 agent log records, 14 activity records, all matching the requirements spec exactly
 
 ## Architecture
@@ -331,15 +356,12 @@ The same pattern works on `/agent-log` with its own activity statuses (Idle / Re
 
 ---
 
-## Out of scope for this MVP slice
+## Out of scope for this release
 
-- Operations Dashboard panels (placeholder route)
-- Settings UI (data source, thresholds, Slack config) — backing tables exist
-- Agent autonomous execution logging for Sniper auto-execute (currently visual-only)
-- Oracle / Pulse / Conductor modal detail expansions
-- Harmony Agent operating mode toggle
-- Live Shopify / QuickBooks integrations (dummy data only per spec section 7)
-- Automated test suite (Vitest + Playwright coming in next phase)
+- **Live Shopify / QuickBooks integrations** — dummy data only per spec section 7
+- **Agent pause/resume persistence** — the Active/Paused toggle is local-state only; a trivial follow-up to write to `agents.is_active`
+- **Automated test suite** — Vitest for utilities + Playwright for the two-tab Realtime/Presence demo
+- **Sniper auto-execute logging to the server** — currently UI-only; a follow-up endpoint would write to `agent_action_log` as "Auto-Executed"
 
 ---
 
@@ -355,19 +377,26 @@ Full spec at [`../MetaboCommand.md`](../MetaboCommand.md). Sections implemented:
 - [x] §3.4.4 Sniper Agent
 - [x] §3.4.5 Conductor Agent
 - [x] §3.4.6 Finance Approval Queue (Realtime, Presence, activity status)
+- [x] §3.5.1 Operations Dashboard Header + KPI bar
+- [x] §3.5.2 Revenue Velocity panel (Acquisition, Conversion, Retention)
+- [x] §3.5.3 Inventory Intelligence panel (Demand Prophet, Logistics Conductor)
+- [x] §3.5.4 Customer Lifetime panel (Support Reflex, Advocacy)
+- [x] §3.5.5 Operational Health panel (Harmony)
+- [x] §3.5.6 Operations Approval Queue (shares Approval Queue component, RLS-scoped)
 - [x] §3.6 Agent Action Log (Realtime, Presence, filters, expandable rows)
 - [x] §3.7 Activity History Log (filters, CSV export, pagination)
+- [x] §3.8 Settings UI (Data Source cards, Threshold table, Slack config with Test Connection)
+- [x] §3.9 User Profile (read-only account, password change, notification preferences)
 - [x] §4.1 RBAC (enforced via RLS)
 - [x] §4.2 Approval workflow (auto-execute threshold + Slack)
 - [x] §4.3 Capital Velocity Score formula (displayed throughout)
+- [x] §4.4 Operating Mode (Growth / Efficiency toggle with confirmation + Realtime)
 - [x] §4.7 Seed data for queues + logs
 - [x] §4.8 Realtime subscription rules
 - [x] §4.9 Presence rules
 - [x] §4.10 Activity status rules
 - [x] §4.11 Activity History tracked types + seed
-- [ ] §3.5 Operations Dashboard — next phase
-- [ ] §3.8 Settings UI — next phase
-- [ ] §3.9 Profile edit actions — next phase
+- [ ] §4.6 Agent pause persistence — UI-only currently; trivial follow-up
 
 ---
 
