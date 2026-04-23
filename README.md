@@ -1,5 +1,11 @@
 # MetaboCommand
 
+
+## Demo
+
+https://github.com/user-attachments/assets/demo.mp4
+
+> _Generated with [demo-video-generator](https://github.com/zan-maker/demo-video-generator)_
 **Metabolic Commerce Multi-Agent Platform** — an AI-agent orchestration dashboard for eCommerce finance and operations teams. Twelve specialized agents across five metabolic systems (Capital Reflex, Revenue Velocity, Inventory Intelligence, Customer Lifetime, Operational Health) surface anomalies, propose actions, and route decisions through role-scoped approval queues with realtime collaboration.
 
 Built on Next.js 16, Supabase (Auth + Postgres + Realtime + Presence), React 19, TypeScript, Tailwind 4, and Recharts.
